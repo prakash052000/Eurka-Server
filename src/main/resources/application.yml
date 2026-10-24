@@ -1,16 +1,51 @@
 server:
-  port: 8761  # Eureka Server runs on port 8761
+  port: 8761
 
 spring:
   application:
-    name: eureka-service  # Name of the Eureka Server
+    name: EurekaServer
+
+info:
+  app:
+    name: EurekaServer
+    type: discovery
+    port: 8761
 
 eureka:
   instance:
-    # hostname: 192.168.1.177 or  192.168.1.6  # Old hostname (commented)
-    hostname: localhost  # Updated hostname (matches your WiFi IP)
+    hostname: localhost
+    instance-id: EurekaServer:8761
+    prefer-ip-address: false
+    metadata-map:
+      unique-name: EurekaServer
+      service-type: discovery
+      port: 8761
   client:
-    register-with-eureka: false  # Eureka Server itself doesn’t need to register
-    fetch-registry: false  # No need to fetch registry
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
   server:
-    enable-self-preservation: true  # Optional: Disable self-preservation mode
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 30000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    info:
+      enabled: true
+  info:
+    env:
+      enabled: true
+    java:
+      enabled: true
+    os:
+      enabled: true
+  metrics:
+    tags:
+      application: EurekaServer
